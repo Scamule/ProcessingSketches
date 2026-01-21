@@ -20,6 +20,7 @@ public void setup() {
   // Basic stuff
   size(1600, 900, P2D);
   frameRate(60);
+  pixelDensity(1);
   // Charge initialization, they'll all be equally spaced horizontally in the middle of the window
   for (int i = 0; i < charges.length; ++i) {
     charges[i] = new Charge((i + 1) * width / (charges.length + 1), height / 2, values[i]);

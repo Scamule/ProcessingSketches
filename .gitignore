@@ -416,3 +416,7 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+
+### ---------- My own ignores ----------
+AudioVisual/data

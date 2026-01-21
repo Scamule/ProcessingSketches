@@ -25,6 +25,7 @@ void setup() {
   size(1800, 500, P2D);
   colorMode(HSB);
   background(0);
+  pixelDensity(1);
 
   song = new SoundFile(this, "IWon't_BirthdayParty_17.wav");
   //song = new SoundFile(this, "Untitled.wav");
