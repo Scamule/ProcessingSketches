@@ -420,3 +420,7 @@ FodyWeavers.xsd
 
 ### ---------- My own ignores ----------
 AudioVisual/data
+.DS_Store
+.gitignore
+AudioVisual/.DS_Store
+AudioVisual/data/.DS_Store

@@ -2,19 +2,21 @@
 
 static boolean someoneIsMoving = false;
 
-int extraBounds = 2000; // Pixels; How far outside the frame a field line can go.
-int[] values = {-1, 4, 1, -2}; // Coulombs; The charges' charges.
-Charge[] charges = new Charge[values.length]; // The array for the charges.
+final int extraBounds = 2000; // Pixels; How far outside the frame a field line can go.
+// final int[] values = {-1, 4, 1, -2}; // Coulombs; The charges' charges.
+final int[] values = {-2, 7, 3, -1}; // Coulombs; The charges' charges.
+final Charge[] charges = new Charge[values.length]; // The array for the charges.
+final double percentError = 0.2; // How many volts a pixel can be away from a real number and still display a black pixel, aka, the potential line thinkness setting.
+final float distanceScalar = 0.003; // This is a scaler for the distances calculated for the voltage. Good numbers are around 0.001 - 0.005. This also scales by pixels, so the higher the value, the larger scale of the program, thus smaller window sizes will like larger values more.
+final int fieldLinesMultiplier = 8; // The multiplier for how many field lines a charge will have (proportional to the charge as well). Negative numbers will resort to the default value of 100 set in the Charge class.
+final double maxVoltage = 30; // The maximum absolute voltage for the potential lines.
+final boolean showMouse = true; // If you want to see your mouse position in the console.
+final boolean showVoltage = true; // If you want to see the voltage of the pixel your mouse is on.
+final boolean equipotentialLines = true; // If you want to see the potential lines.
+final boolean fieldLines = true; // If you want to see the field lines.
+final boolean showNegativeFieldLines = false; // If you want the negative charges to also be a source of field lines.
+
 float voltage = 0; // Volts; used to store the voltage across the program. Doesn't need to be global, but it is anyway.
-double percentError = 0.05; // How many volts a pixel can be away from a real number and still display a black pixel, aka, the potential line thinkness setting.
-int constant = 200; // This is a scaler for the voltage values. This can be treated as a weight for each charge, but that's kind of pointless.
-int fieldLinesMultiplier = 8; // The multiplier for how many field lines a charge will have (proportional to the charge as well.)
-double maxVoltage = 15; // The maximum absolute voltage for the potential lines, so your computer doesn't explode or something.
-boolean showMouse = true; // If you want to see your mouse position in the console.
-boolean showVoltage = true; // If you want to see the voltage of the pixel your mouse is on.
-boolean equipotentialLines = true; // If you want to see the potential lines.
-boolean fieldLines = false; // If you want to see the field lines.
-boolean showNegativeFieldLines = false; // If you want the negative charges to also be a source of field lines.
 
 public void setup() {
   // Basic stuff
@@ -24,7 +26,7 @@ public void setup() {
   // Charge initialization, they'll all be equally spaced horizontally in the middle of the window
   for (int i = 0; i < charges.length; ++i) {
     charges[i] = new Charge((i + 1) * width / (charges.length + 1), height / 2, values[i]);
-    charges[i].setConstant(constant);
+    charges[i].setConstant(distanceScalar);
   }
 }
 

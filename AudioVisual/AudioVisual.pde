@@ -1,4 +1,4 @@
-import processing.sound.*; //<>//
+import processing.sound.*;
 
 SoundFile song;
 FFT fft;
@@ -12,45 +12,41 @@ final int bands = (int) pow(2, 12); // Number of bands
 final int minF = 2; // Minumum frequency to show, Hz
 final int maxF = 24000; // Maximum frequency to show, Hz
 final int framerate = 60; // Framerate, frames
-final int bandWidth = 20; // How wide the bars are, pixels
+final int bandWidth = 10; // How wide the bars are, pixels
 final int bleed = 30; // How much sound-bleed there is between bands, pixels
 final int bandDistance = 5; // Distance between bands, pixels
 final float bleedBase = 0.99; // The base of the pixel distance bleed scale
 final float bleedPower = 0; // Power per pixel distance to apply to the bleed base, 0 for nothing
+final boolean enableRecording = false; // Enables recording if set to true
 int numBands;
 
 void setup() {
-
-  //size(1920*2, 1080, P2D);
-  size(1800, 500, P2D);
+  // Sketch setup
+  // size(1920*2, 1080, P2D); // 4k width
+  size(1280, 600, P2D);
   colorMode(HSB);
   background(0);
+  frameRate(framerate);
   pixelDensity(1);
-
-  song = new SoundFile(this, "IWon't_BirthdayParty_17.wav");
-  //song = new SoundFile(this, "Untitled.wav");
-  //song = new SoundFile(this, "AtTimesLikeThis6.wav");
-  //song = new SoundFile(this, "Kristen_Second song.wav");
+  noStroke();
+  // Importing the sound file
+  song = new SoundFile(this, "IWon't_BirthdayParty_17.wav"); // Replace the .wav file with another of your choosing
   song.play();
-  //song.amp(0.1);
-  //song.rate(0.5);
-  //song.jump(35);
-
+  // Fast Fourier Transform
   fft = new FFT(this, bands);
   fft.input(song);
   spectrum = new float[bands];
   history = new float[bands];
   positions = new float[bands];
+  // Scaling the band positions. Octaves are scaled logarithmically in music.
   for (int i = 0; i < bands; i++) {
     float pos = log(i) / log(bands);
-    float x = width * map(pos, log(minF) / log(24000), log(maxF) / log(24000), 0, 1);
+    float x = map(pos, log(minF) / log(24000), log(maxF) / log(24000), 0, width);
     positions[i] = x;
   }
-
+  // Do some math for the number of bands based on the width, bandWidth, and bandDistance
   numBands = (int) (width / (bandWidth + bandDistance));
-
-  println("Number of bands is " + numBands);
-  // Find new band values (closest band to each spot)
+  // Find new scaled band values (closest old band to each new band location)
   newBands = new int[numBands];
   int curLocation = bleed * 2;
   int i = 0;
@@ -80,7 +76,7 @@ void setup() {
 
 void draw() {
   background(0);
-  frameRate(framerate);
+  // Analyze the current frame
   fft.analyze(spectrum);
   // Collect values into history
   for (int i = 0; i < bands; i++) {
@@ -101,7 +97,7 @@ void draw() {
         + pow(bleedBase, bleedPower * (middlePosition - positions[curBand])) * history[curBand] / count;
       curBand--;
     }
-    // Right band
+    // Right bands
     curBand = newBands[i] + 1;
     while (curBand < bands && positions[curBand] - middlePosition < bandWidth + bleed) {
       count++;
@@ -111,6 +107,11 @@ void draw() {
       curBand++;
     }
 
+    // At this point the average has been calculated, but the value may need adjusting.
+    // The Fourier Transform calculates the amplitude for each small frequency range.
+    // This frequency range stays constant the whole way up the spectrum.
+    // The way pitch works in music is that it is a logarithmic scale if you set the linear scale to be octave based (every octave is doubled each time A4 = 440hz, A5 = 880hz, A6 = 1,760hz).
+    // Because of this, the average amplitude of a note is gonna be a lot lower for higher notes, so we need to bring them back up.
 
     // Average scaling
     average *= pow(count, 1.0);
@@ -119,24 +120,21 @@ void draw() {
     average = min(average, 1);
 
     // Draw
-    noStroke();
     fill(
       map(average, 0, 1, 170, 180), // Hue
-      map(average, 0, 1, 230, 180), // Saturation
+      // map(i, 0, numBands, 50, 200), // Hue
+      map(average, 0, 1, 255, 180), // Saturation
+      // map(i, 0, numBands, 0, 255), // Saturation
       map(average, 0, 1, 180, 255)  // Brightness
-      );
-    //strokeWeight(4);
-    //stroke(
-    //  0,
-    //  0,
-    //  map(average, 0, 1, 0, 100)
-    //  );
+      // map(i, 0, numBands, 180, 255) // Brightness
+    );
 
     rect(i * (bandWidth + bandDistance) + 10, height - height * average, bandWidth, height * average, 100);
   }
+  
+  // Record video
+  if (enableRecording) {
+    recordVideo();
+  }
 
-
-
-
-  //record();
 }

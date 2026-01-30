@@ -2,7 +2,7 @@ public class Charge {
   
   PVector position; // Position of the Charge.
   int charge; // Coulombs; Charge's charge.
-  double constant = 100; // Voltage scalar, can be overridden.
+  float distanceScalar = 1; // Distance scalar, can be overridden.
   int diameter = 40; // Pixels; diameter of the Charge.
   boolean move = false; // Used to determine if a Charge should move or not.
   
@@ -36,7 +36,7 @@ public class Charge {
   */
   public double calculateVoltage(double distance) {
     double voltage;
-    voltage = this.constant * ((double)this.charge / distance);
+    voltage = (double) this.charge / (distance * this.distanceScalar);
     return voltage;
   }
   
@@ -90,8 +90,9 @@ public class Charge {
     Sets the scalar value for the voltage of this charge.
     @param constant The new voltage scalar value
   */
-  public void setConstant(double constant) {
-    this.constant = constant;
+  public void setConstant(float distanceScalar) {
+    if (distanceScalar <= 0) return;
+    this.distanceScalar = distanceScalar;
   }
   
   /**
@@ -118,7 +119,6 @@ public class Charge {
     else {
       fill(50, 100);
       ellipse(this.position.x, this.position.y, diameter, diameter);
-      // Text for negative charge
       fill(0);
       text(this.charge, this.position.x + 1, this.position.y + 5);
     } 
