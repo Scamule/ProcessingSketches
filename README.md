@@ -13,10 +13,12 @@ This visualizer is completely customizable, from the number of bars (bands) to t
 
 #### Example 1
 As bands get higher, they get brighter and the color becomes more purple.
+
 ![](README%20Media/AudioVisual1.gif)
 
 #### Example 2
 The position determines the color, and the height determines the saturation and brightness. The bands are also smaller.
+
 ![](README%20Media/AudioVisual2.gif)
 
 ### Why did I made it?
@@ -31,10 +33,12 @@ This sketch lets you see the behavior of the electric field and electric potenti
 
 #### Example 1
 This showcases how the field and voltage lines update in real time while moving charges around.
+
 ![](README%20Media/ChargeDiagram1.gif)
 
 #### Example 2
 This is another example, but with larger charges.
+
 ![](README%20Media/ChargeDiagram2.gif)
 
 ### Why did I made it?
